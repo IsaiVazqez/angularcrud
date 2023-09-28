@@ -2,23 +2,33 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { User } from 'src/app/interface/user.interface';
 import { UserService } from 'src/app/services/user.service';
-import { trigger, state, style, transition, animate } from '@angular/animations';
-
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate,
+} from '@angular/animations';
+import { TipoPersona } from 'src/app/interface/tipo-persona';
+import { TipoPersonaService } from 'src/app/services/tipo-persona.service';
+import { UserToBeSent } from 'src/app/interface/user-tobe';
 
 @Component({
   selector: 'app-user-modal',
   templateUrl: './user-modal.component.html',
   styleUrls: ['./user-modal.component.css'],
- animations: [
-  trigger('fadeInOut', [
-    state('void', style({
-      opacity: 0
-    })),
-    transition('void <=> *', animate(300)),
-  ])
-]
+  animations: [
+    trigger('fadeInOut', [
+      state(
+        'void',
+        style({
+          opacity: 0,
+        })
+      ),
+      transition('void <=> *', animate(300)),
+    ]),
+  ],
 })
-
 export class UserModalComponent {
   @Input() userForm!: FormGroup;
   @Input() showModal!: boolean;
@@ -29,78 +39,95 @@ export class UserModalComponent {
   public operationError: boolean = false;
   public operationSuccess: boolean = false;
   public isLoading: boolean = false;
+  tiposPersona: TipoPersona[] = [];
 
-  constructor(private userService: UserService) {
-
+  constructor(
+    private userService: UserService,
+    private tipoPersonaService: TipoPersonaService
+  ) { }
+  ngOnInit() {
+    this.tipoPersonaService.getTypes().subscribe((data: TipoPersona[]) => {
+      this.tiposPersona = data;
+    });
   }
-
   closeModal(): void {
     this.showModal = false;
     this.userForm.reset();
     this.editIndex = null;
-    this.closeModalEvent.emit();  // Emitir el evento al cerrar
-
+    this.closeModalEvent.emit();
   }
+
+  getUserToBeSaved(): User {
+    const { name = '', email = '', ciudad = '', estado = '', tipoPersona } = this.userForm.value;
+    const nombreTipoPersona = this.tiposPersona.find(t => t.id === +tipoPersona)?.nombre || '';
+    if (this.editIndex !== null && this.users[this.editIndex]) {
+      return {
+        ...this.users[this.editIndex],
+        name: name ?? '',
+        email: email ?? '',
+        ciudad: ciudad ?? '',
+        estado: estado ?? '',
+        tipoPersona: {
+          id: tipoPersona,
+          nombre: nombreTipoPersona
+        }
+      };
+    } else {
+      return {
+        id: 0,
+        name: name ?? '',
+        email: email ?? '',
+        ciudad: ciudad ?? '',
+        estado: estado ?? '',
+        tipoPersona: {
+          id: tipoPersona,
+          nombre: nombreTipoPersona
+        }
+      };
+    }
+  }
+
 
   addOrUpdateUser(): void {
     this.userForm.markAllAsTouched();
     if (!this.userForm.valid) {
       return;
     }
-
     this.isLoading = true;
-
-    const { name = '', email = '', ciudad = '', estado = '' } = this.userForm.value;
-    const id = this.editIndex !== null ? this.users[this.editIndex].id : this.users.length + 1;
-    const newUser: User = {
-      id,
-      name: name ?? '',
-      email: email ?? '',
-      ciudad: ciudad ?? '',
-      estado: estado ?? '',
-      tipoPersonaId: 0,
+    const userToBeSaved: User = this.getUserToBeSaved();
+    const userToBeSent: UserToBeSent = {
+      name: userToBeSaved.name,
+      email: userToBeSaved.email,
+      ciudad: userToBeSaved.ciudad,
+      estado: userToBeSaved.estado,
+      tipoPersonaId: userToBeSaved.tipoPersona.id
     };
-
-    const observable = this.editIndex !== null ?
-      this.userService.updateUser(newUser.id, newUser) :
-      this.userService.createUser(newUser);
-
-    observable.subscribe(() => {
-
-      this.isLoading = false;
-      this.operationSuccess = true;
-
-      setTimeout(() => {
-        this.operationSuccess = false;
-        this.closeModal();
-
-      }, 2000);
-    }, error => {
-      this.isLoading = false;
-      this.operationError = true;
-      console.error('An error occurred:', error);
-    });
-  }
-
-
-  updateExistingUser(user: User): void {
-    this.userService.updateUser(user.id, user).subscribe(() => {
-      this.users[this.editIndex as number] = user;
-      this.closeModal();
-    }, error => {
-      console.error('An error occurred:', error);
-    });
-  }
-
-  createAndAddUser(user: User): void {
-    this.userService.createUser(user).subscribe((createdUser: User) => {
-
-      this.users.push(createdUser);
-
-      this.closeModal();
-
-    }, error => {
-      console.error('An error occurred:', error);
-    });
+    let observable;
+    if (this.editIndex !== null) {
+      observable = this.userService.updateUser(userToBeSaved.id, userToBeSent);
+    } else {
+      observable = this.userService.createUser(userToBeSent);
+    }
+    observable.subscribe(
+      (returnedUser: User) => {
+        if (this.editIndex === null && returnedUser) {
+          this.users.push(returnedUser);
+        } else if (this.editIndex !== null) {
+          this.users[this.editIndex] = returnedUser;
+        }
+        this.isLoading = false;
+        this.operationSuccess = true;
+        setTimeout(() => {
+          this.operationSuccess = false;
+          this.closeModal();
+        }, 2000);
+      },
+      (error) => {
+        this.isLoading = false;
+        this.operationError = true;
+        console.error('An error occurred:', error);
+      }
+    );
   }
 }
+

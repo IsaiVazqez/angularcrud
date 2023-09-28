@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { User } from '../interface/user.interface';
 import { Observable, Subject, tap } from 'rxjs';
 import { API_URL } from '../constants/api';
+import { UserToBeSent } from '../interface/user-tobe';
 
 
 @Injectable({
@@ -25,7 +26,7 @@ export class UserService {
   }
 
   // Crear un nuevo usuario
-  createUser(user: User): Observable<User> {
+  createUser(user: UserToBeSent): Observable<User> {
     return this.http.post<User>(`${API_URL}/user`, user).pipe(
       tap(() => {
         this.userChanged.next();
@@ -33,7 +34,7 @@ export class UserService {
     );  }
 
   // Actualizar un usuario
-  updateUser(id: number, user: User): Observable<User> {
+  updateUser(id: number, user: UserToBeSent): Observable<User> {
     return this.http.put<User>(`${API_URL}/user/${id}`, user).pipe(
       tap(() => {
         this.userChanged.next();

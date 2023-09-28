@@ -4,80 +4,186 @@ import { TipoPersona } from 'src/app/interface/tipo-persona';
 import { User } from 'src/app/interface/user.interface';
 import { UserService } from 'src/app/services/user.service';
 import { TipoPersonaService } from 'src/app/services/tipo-persona.service';
-import { Router } from '@angular/router';  // Importar el Router
+import { Router } from '@angular/router';
+import { FormControl } from '@angular/forms';
+import { UserToBeSent } from 'src/app/interface/user-tobe';
 
 @Component({
   selector: 'app-userprofile',
   templateUrl: './userprofile.component.html',
-  styleUrls: ['./userprofile.component.css']
+  styleUrls: ['./userprofile.component.css'],
 })
 export class UserprofileComponent {
   user!: User;
   tiposPersona: TipoPersona[] = [];
+  tipoPersonaControl = new FormControl('');
+  public newTipoPersona: string = '';
+  public showAddTypeField: boolean = false;
+  showDeleteTypeField = false;
 
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
     private tipoPersonaService: TipoPersonaService,
-    private router: Router  // Inyectar el Router
+    private router: Router
+  ) {
+    this.tipoPersonaControl.valueChanges.subscribe((newTipo) => {
+      if (newTipo !== null && newTipo !== '') {
+      }
+    });
+  }
 
-  ) { }
+  initializeUserProfile(id: number): void {
+    this.userService.getUserById(id).subscribe(
+      user => {
+        if (user) {
+          this.user = user;
+          const tipoPersonaId = this.user.tipoPersona?.id === 0 ? '' : this.user.tipoPersona?.id.toString();
+          this.tipoPersonaControl.setValue(tipoPersonaId);
+        }
+      },
+      error => {
+        console.error('Ocurrió un error:', error);
+        this.router.navigate(['/error']);
+      }
+    );
+  }
 
   ngOnInit(): void {
     const idStr = this.route.snapshot.paramMap.get('id');
     const id = idStr ? +idStr : null;
-
     if (id !== null && !isNaN(id) && id !== 0) {
       this.userService.getUserById(id).subscribe(
-        user => {
+        (user) => {
           if (user) {
             this.user = user;
           }
         },
-        error => {
+        (error) => {
           console.error('Ocurrió un error:', error);
           this.router.navigate(['/error']);
         }
       );
+
       this.tipoPersonaService.getTypes().subscribe(
-        tipos => {
+        (tipos) => {
           if (tipos) {
             this.tiposPersona = tipos;
+            this.initializeUserProfile(id);
           }
         },
-        error => {
+        (error) => {
           console.error('Ocurrió un error:', error);
           this.router.navigate(['/error']);
         }
       );
     }
   }
+  updateTipoPersona(newTipoId: number) {
+    const updatedUser: UserToBeSent = {
+      name: this.user.name,
+      email: this.user.email,
+      ciudad: this.user.ciudad,
+      estado: this.user.estado,
+      tipoPersonaId: newTipoId,
+    };
 
+    console.log('Antes de la actualización:', this.user);
 
-  updateTipoPersona(tipoPersonaId: number): void {
-    if (this.user && this.user.id !== undefined && this.user.id !== null) {
-      this.user.tipoPersonaId = tipoPersonaId;
-      this.userService.updateUser(this.user.id, this.user).subscribe(
-        updatedUser => {
-          if (updatedUser !== null) {
-            this.user = updatedUser;
-          } else {
-            console.error('El usuario actualizado es null');
-            this.router.navigate(['/error']);
-          }
+    this.userService.getUserById(this.user.id).subscribe(
+      (user) => {
+        if (user) {
+          this.user = user;
+          this.tipoPersonaControl.setValue(
+            this.user.tipoPersona?.id.toString() ?? ''
+          );
+        }
+      },
+      (error) => {
+        console.error('Ocurrió un error:', error);
+        this.router.navigate(['/error']);
+      }
+    );
+  }
+
+  goBack() {
+    this.router.navigate(['/']);
+  }
+
+  addTipoPersona() {
+    const tipoToAdd: TipoPersona = { id: 0, nombre: this.newTipoPersona };
+
+    this.tipoPersonaService.createTypes(tipoToAdd).subscribe(
+      (newTipo) => {
+        this.tiposPersona.push(newTipo);
+        this.newTipoPersona = '';
+        this.showAddTypeField = false;
+      },
+      (error) => {
+        console.error('Ocurrió un error:', error);
+      }
+    );
+  }
+
+  confirmDelete(id: number) {
+    if (window.confirm('¿Seguro quieres eliminarlo?')) {
+      this.tipoPersonaService.deleteType(id).subscribe(
+        () => {
+          alert('Tipo eliminado');
+          this.loadTiposPersona();
         },
-        error => {
-          console.error('Ocurrió un error durante la actualización:', error);
-          this.router.navigate(['/error']);
+        (error) => {
+          if (
+            error.error.message ===
+            'Este tipo de persona ya está asignado a un usuario y no puede ser eliminado.'
+          ) {
+            alert(
+              'Este tipo de persona ya le pertenece a alguien y no puede ser eliminado.'
+            );
+          } else {
+            alert('Error al eliminar tipo de persona');
+          }
+        }
+      );
+    }
+  }
+
+  loadTiposPersona() {
+    this.tipoPersonaService.getTypes().subscribe(
+      (tipos) => {
+        this.tiposPersona = tipos;
+      },
+    );
+  }
+
+  saveChanges() {
+    if (this.tipoPersonaControl.valid) {
+      const selectedTipoPersonaId = +this.tipoPersonaControl.value!;
+      const updatedUser: UserToBeSent = {
+        name: this.user.name,
+        email: this.user.email,
+        ciudad: this.user.ciudad,
+        estado: this.user.estado,
+        tipoPersonaId: selectedTipoPersonaId,
+      };
+
+      this.userService.updateUser(this.user.id, updatedUser).subscribe(
+        (updated) => {
+          this.user = {
+            ...this.user,
+            tipoPersona: { id: selectedTipoPersonaId, nombre: '' },
+          };
+          window.alert('El tipo de persona se ha actualizado correctamente.');
+        },
+        (error) => {
+          console.error('Error al actualizar el tipo de persona:', error);
+          window.alert(
+            'Hubo un error al actualizar. Por favor, inténtelo de nuevo.'
+          );
         }
       );
     } else {
-      console.error('this.user o this.user.id son null');
-      this.router.navigate(['/error']);
+      window.alert('Por favor, seleccione un tipo de persona válido.');
     }
   }
-  goBack() {
-    this.router.navigate(['/']); // Asume que tu ruta para el inicio es '/'
-  }
-
 }

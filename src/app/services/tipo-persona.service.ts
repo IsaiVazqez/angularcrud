@@ -14,17 +14,17 @@ export class TipoPersonaService {
 
 
   getTypes(): Observable<TipoPersona[]> {
-    return this.http.get<TipoPersona[]>(`${API_URL}/tipopersona`);
+    return this.http.get<TipoPersona[]>(`${API_URL}/typeperson`);
   }
 
   // Obtener un usuario por ID
   getTypeById(id: number): Observable<TipoPersona> {
-    return this.http.get<TipoPersona>(`${API_URL}/tipopersona/${id}`);
+    return this.http.get<TipoPersona>(`${API_URL}/typeperson/${id}`);
   }
 
   // Crear un nuevo usuario
   createTypes(tipo: TipoPersona): Observable<TipoPersona> {
-    return this.http.post<TipoPersona>(`${API_URL}/tipopersona`, tipo).pipe(
+    return this.http.post<TipoPersona>(`${API_URL}/typeperson`, tipo).pipe(
       tap(() => {
         this.tipoChanged.next();
       })
@@ -32,7 +32,7 @@ export class TipoPersonaService {
 
   // Actualizar un usuario
   updateType(id: number, tipo: TipoPersona): Observable<TipoPersona> {
-    return this.http.put<TipoPersona>(`${API_URL}/tipopersona/${id}`, tipo).pipe(
+    return this.http.put<TipoPersona>(`${API_URL}/typeperson/${id}`, tipo).pipe(
       tap(() => {
         this.tipoChanged.next();
       })
@@ -41,7 +41,7 @@ export class TipoPersonaService {
 
   // Eliminar un usuario
   deleteType(id: number): Observable<void> {
-    return this.http.delete<void>(`${API_URL}/tipopersona/${id}`).pipe(
+    return this.http.delete<void>(`${API_URL}/typeperson/${id}`).pipe(
       tap(() => {
         this.tipoChanged.next();
       })

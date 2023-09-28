@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -18,10 +18,12 @@ export class CrudComponent implements OnInit {
     name: new FormControl('', [Validators.required, Validators.minLength(5)]),
     email: new FormControl('', [Validators.required, Validators.email]),
     ciudad: new FormControl('', [Validators.required]),
-    estado: new FormControl('', [Validators.required])
+    estado: new FormControl('', [Validators.required]),
+    tipoPersona: new FormControl('', [Validators.required])
   });
 
   constructor(private userService: UserService, private router: Router) { }
+  private ngUnsubscribe = new Subject<void>();
 
   users: User[] = [];
   showModal: boolean = false;
@@ -65,22 +67,23 @@ export class CrudComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this.userService.userChanged.unsubscribe();
 
   }
 
 
   openModal(index?: number): void {
     this.showModal = true;
-    console.log("cscasc");
     if (index !== undefined) {
       this.editIndex = index;
       const user = this.users[index];
+      const tipoPersonaId = user.tipoPersona?.id === 0 ? '' : user.tipoPersona?.id.toString();
+
       this.userForm.setValue({
         name: user.name ?? '',
         email: user.email ?? '',
         ciudad: user.ciudad ?? '',
-        estado: user.estado ?? ''
+        estado: user.estado ?? '',
+        tipoPersona: tipoPersonaId
       });
     }
   }
@@ -88,6 +91,7 @@ export class CrudComponent implements OnInit {
   closeModal(): void {
     this.showModal = false;
     this.userForm.reset();
+    this.userForm.get('tipoPersona')?.setValue('');
     this.editIndex = null;
   }
 
@@ -113,7 +117,7 @@ confirmDelete(): void {
       () => {
         if (this.toDeleteIndex !== null) {
           this.users.splice(this.toDeleteIndex, 1);
-          this.toDeleteIndex = null; // Restablecer el índice
+          this.toDeleteIndex = null;
         }
       },
       (error) => {
@@ -121,7 +125,7 @@ confirmDelete(): void {
       }
     );
   }
-  this.closeDeleteModal(); // Cierra el modal
+  this.closeDeleteModal();
 }
 
 

@@ -1,7 +1,8 @@
 <div class="container mt-5 d-flex justify-content-center">
   <div class="col-md-6">
-    <div class="mb-3 text-left">
+    <div class="mb-3 text-left d-flex justify-content-between">
       <button class="btn btn-primary" (click)="goBack()">← Regresar</button>
+      <button class="btn btn-success" (click)="saveChanges()">Guardar</button>
     </div>
 
     <div class="card">
@@ -9,21 +10,49 @@
         <h1>Perfil de Usuario</h1>
       </div>
       <div class="card-body">
-        <h5 class="card-title">{{ user.name }}</h5>
-        <p class="card-text">
-          <strong>Email:</strong> {{ user.email }} <br>
-          <strong>Ciudad:</strong> {{ user.ciudad }} <br>
-          <strong>Estado:</strong> {{ user.estado }} <br>
-        </p>
+        <div *ngIf="user">
+          <h5 class="card-title">{{ user.name }}</h5>
+          <p class="card-text">
+            <strong>Email:</strong> {{ user.email }} <br>
+            <strong>Ciudad:</strong> {{ user.ciudad }} <br>
+            <strong>Estado:</strong> {{ user.estado }} <br>
+          </p>
         <div class="dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-            {{ user.tipoPersonaId }}
-          </button>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" *ngFor="let tipo of tiposPersona" (click)="updateTipoPersona(tipo.id)">{{ tipo.nombre }}</a>
+          <div class="form-group">
+            <select [formControl]="tipoPersonaControl" class="form-control mt-2" style="background-color: white;">
+              <option value="" disabled>Selecciona un tipo de persona</option>
+              <option *ngFor="let tipo of tiposPersona.slice(1)" [value]="tipo.id">{{ tipo.nombre }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="d-flex mt-3">
+          <div class="">
+            <button class="btn btn-primary" (click)="showAddTypeField = !showAddTypeField">Agregar Tipo de Persona</button>
+            </div>
+            <div style="padding-left: 40px">
+              <button class="btn btn-danger ml-7" (click)="showDeleteTypeField = !showDeleteTypeField">Eliminar Tipo de Persona</button>
+            </div>
+        </div>
+
+        <div *ngIf="showDeleteTypeField" class="mt-2">
+          <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between" *ngFor="let tipo of tiposPersona.slice(1)">
+              <span>{{ tipo.nombre }}</span>
+              <button class="btn btn-danger btn-sm" (click)="confirmDelete(tipo.id)">Eliminar</button>
+            </li>
+          </ul>
+        </div>
+
+        <div *ngIf="showAddTypeField" class="mt-2">
+          <div class="input-group">
+            <input type="text" [(ngModel)]="newTipoPersona" class="form-control" placeholder="Nuevo tipo de persona" style="background-color: white;">
+            <div class="input-group-append ">
+              <button class="btn btn-success" (click)="addTipoPersona()">Agregar</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
   </div>
 </div>

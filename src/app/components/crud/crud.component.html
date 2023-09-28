@@ -11,17 +11,19 @@
           <th>Email</th>
           <th>Ciudad</th>
           <th>Estado</th>
+          <th>Tipo de Persona</th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody [ngClass]="isSmallScreen ? 'd-flex flex-column align-items-stretch' : ''">
         <ng-container *ngFor="let user of users; let i = index">
           <tr *ngIf="!isSmallScreen">
-            <td>{{ user.id }}</td>
-            <td>{{ user.name }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.ciudad }}</td>
-            <td>{{ user.estado }}</td>
+            <td>{{ user?.id }}</td>
+            <td>{{ user?.name }}</td>
+            <td>{{ user?.email }}</td>
+            <td>{{ user?.ciudad }}</td>
+            <td>{{ user?.estado }}</td>
+            <td>{{ user?.tipoPersona?.nombre }}</td>
             <td>
               <button class="btn btn-info me-2" (click)="viewUserProfile(user.id)">Ver Perfil</button>
               <button class="btn btn-warning me-2" (click)="editUser(i)">Editar</button>
@@ -29,11 +31,13 @@
             </td>
           </tr>
           <div *ngIf="isSmallScreen" class="d-flex flex-column mb-2 p-2 bg-light">
-            <div><strong>ID: </strong>{{ user.id }}</div>
-            <div><strong>Nombre: </strong>{{ user.name }}</div>
-            <div><strong>Email: </strong>{{ user.email }}</div>
-            <div><strong>Ciudad: </strong>{{ user.ciudad }}</div>
-            <div><strong>Estado: </strong>{{ user.estado }}</div>
+            <div><strong>ID: </strong>{{ user?.id }}</div>
+            <div><strong>Nombre: </strong>{{ user?.name }}</div>
+            <div><strong>Email: </strong>{{ user?.email }}</div>
+            <div><strong>Ciudad: </strong>{{ user?.ciudad }}</div>
+            <div><strong>Estado: </strong>{{ user?.estado }}</div>
+            <div><strong>Estado: </strong>{{ user?.tipoPersona?.nombre  }}</div>
+
             <div class="mt-2">
               <button class="btn btn-info me-2" (click)="viewUserProfile(user.id)">Ver Perfil</button>
               <button class="btn btn-warning me-2" (click)="editUser(i)">Editar</button>
@@ -46,7 +50,7 @@
   </div>
   <div *ngIf="showModal" class="modal-backdrop show"></div>
   <app-user-modal [userForm]="userForm" [showModal]="showModal" [editIndex]="editIndex" [users]="users"
-    (closeModalEvent)="closeModal()"></app-user-modal>
+    (closeModalEvent)="closeModal() "></app-user-modal>
   <div *ngIf="showDeleteModal" class="modal d-block" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">

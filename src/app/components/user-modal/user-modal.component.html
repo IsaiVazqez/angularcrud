@@ -40,6 +40,18 @@
               <div *ngIf="userForm.get('estado')?.errors?.['required']">Estado es requerido.</div>
             </div>
           </div>
+
+          <div class="form-group">
+            <select formControlName="tipoPersona" class="form-control mt-2" style="background-color: white;">
+              <option value="" disabled>Selecciona un tipo de persona</option>
+              <option *ngFor="let tipo of tiposPersona.slice(1)" [value]="tipo.id">{{ tipo.nombre }}</option>
+            </select>
+            <div *ngIf="userForm.get('tipoPersona')?.invalid && userForm.get('tipoPersona')?.touched" class="text-danger">
+              Debes seleccionar un tipo de persona.
+            </div>
+          </div>
+
+
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Guardar</button>
           </div>
@@ -52,4 +64,4 @@
     <div *ngIf="operationError" class="notification-error">
       Hubo un error al crear el usuario.
     </div>
-</div>
+  </div>
