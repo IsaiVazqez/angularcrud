@@ -1,0 +1,68 @@
+<div class="container">
+  <div class="d-flex justify-content-end mb-3">
+    <button class="btn btn-success mt-3 mb-3" (click)="openModal()">Agregar Usuario</button>
+  </div>
+  <div class="table-responsive">
+    <table class="table">
+      <thead [ngClass]="isSmallScreen ? 'd-none' : ''">
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Ciudad</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody [ngClass]="isSmallScreen ? 'd-flex flex-column align-items-stretch' : ''">
+        <ng-container *ngFor="let user of users; let i = index">
+          <tr *ngIf="!isSmallScreen">
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.ciudad }}</td>
+            <td>{{ user.estado }}</td>
+            <td>
+              <button class="btn btn-info me-2" (click)="viewUserProfile(user.id)">Ver Perfil</button>
+              <button class="btn btn-warning me-2" (click)="editUser(i)">Editar</button>
+              <button class="btn btn-danger" (click)="openDeleteModal(i)">Borrar</button>
+            </td>
+          </tr>
+          <div *ngIf="isSmallScreen" class="d-flex flex-column mb-2 p-2 bg-light">
+            <div><strong>ID: </strong>{{ user.id }}</div>
+            <div><strong>Nombre: </strong>{{ user.name }}</div>
+            <div><strong>Email: </strong>{{ user.email }}</div>
+            <div><strong>Ciudad: </strong>{{ user.ciudad }}</div>
+            <div><strong>Estado: </strong>{{ user.estado }}</div>
+            <div class="mt-2">
+              <button class="btn btn-info me-2" (click)="viewUserProfile(user.id)">Ver Perfil</button>
+              <button class="btn btn-warning me-2" (click)="editUser(i)">Editar</button>
+              <button class="btn btn-danger" (click)="openDeleteModal(i)">Borrar</button>
+            </div>
+          </div>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+  <div *ngIf="showModal" class="modal-backdrop show"></div>
+  <app-user-modal [userForm]="userForm" [showModal]="showModal" [editIndex]="editIndex" [users]="users"
+    (closeModalEvent)="closeModal()"></app-user-modal>
+  <div *ngIf="showDeleteModal" class="modal d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirmación de Borrado</h5>
+          <button type="button" class="btn-close" (click)="closeDeleteModal()"></button>
+        </div>
+        <div class="modal-body">
+          <p>¿Seguro que quieres borrar este usuario?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeDeleteModal()">No</button>
+          <button type="button" class="btn btn-danger" (click)="confirmDelete()">Sí, borrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

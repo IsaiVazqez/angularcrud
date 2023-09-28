@@ -1,0 +1,55 @@
+<div class="modal" tabindex="-1" [style.display]="showModal ? 'block' : 'none'" [style.top]="showModal ? '30%' : null">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div *ngIf="!operationSuccess" class="modal-header">
+        <h5 class="modal-title">Agregar/Editar Usuario</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+      </div>
+      <div *ngIf="isLoading" class="modal-body text-center">
+        <img src="assets/spinner.gif" alt="Cargando..." class="img-fluid w-50">
+      </div>
+
+      <form *ngIf="!isLoading && !operationSuccess && !operationError" [formGroup]="userForm"
+        (ngSubmit)="addOrUpdateUser()">
+        <div class="modal-body p-3">
+          <div class="form-group">
+            <input formControlName="name" type="text" class="form-control" placeholder="Nombre">
+            <div *ngIf="userForm.get('name')?.invalid && userForm.get('name')?.touched" class="text-danger">
+              <div *ngIf="userForm.get('name')?.errors?.['required']">Nombre es requerido.</div>
+              <div *ngIf="userForm.get('name')?.errors?.['minlength']">Nombre debe tener al menos 5 caracteres.</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <input formControlName="email" type="email" class="form-control mt-2" placeholder="Email">
+            <div *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched" class="text-danger">
+              <div *ngIf="userForm.get('email')?.errors?.['required']">Email es requerido.</div>
+              <div *ngIf="userForm.get('email')?.errors?.['email']">Por favor ingrese un email válido.</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <input formControlName="ciudad" type="text" class="form-control mt-2" placeholder="Ciudad">
+            <div *ngIf="userForm.get('ciudad')?.invalid && userForm.get('ciudad')?.touched" class="text-danger">
+              <div *ngIf="userForm.get('ciudad')?.errors?.['required']">Ciudad es requerida.</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <input formControlName="estado" type="text" class="form-control mt-2" placeholder="Estado">
+            <div *ngIf="userForm.get('estado')?.invalid && userForm.get('estado')?.touched" class="text-danger">
+              <div *ngIf="userForm.get('estado')?.errors?.['required']">Estado es requerido.</div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div *ngIf="operationSuccess" class="notification-success">
+      Usuario creado con éxito.
+    </div>
+    <div *ngIf="operationError" class="notification-error">
+      Hubo un error al crear el usuario.
+    </div>
+</div>
