@@ -1,7 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { User } from '../interface/user.interface';
 import { Observable, Subject, tap } from 'rxjs';
+
+import { User } from '../interface/user.interface';
 import { API_URL } from '../constants/api';
 import { UserToBeSent } from '../interface/user-tobe';
 
@@ -16,8 +17,11 @@ export class UserService {
   userChanged = new Subject<void>();
 
 
-  getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(`${API_URL}/user`);
+  getUsers(pageNumber: number, pageSize: number): Observable<User[]> {
+    let params = new HttpParams()
+      .set('pageNumber', pageNumber.toString())
+      .set('pageSize', pageSize.toString());
+    return this.http.get<User[]>(`${API_URL}/user`, { params: params });
   }
 
   // Obtener un usuario por ID
@@ -50,4 +54,5 @@ export class UserService {
       })
     );;
   }
+
 }

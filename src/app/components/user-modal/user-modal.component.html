@@ -8,7 +8,6 @@
       <div *ngIf="isLoading" class="modal-body text-center">
         <img src="assets/spinner.gif" alt="Cargando..." class="img-fluid w-50">
       </div>
-
       <form *ngIf="!isLoading && !operationSuccess && !operationError" [formGroup]="userForm"
         (ngSubmit)="addOrUpdateUser()">
         <div class="modal-body p-3">
@@ -26,7 +25,6 @@
               <div *ngIf="userForm.get('email')?.errors?.['email']">Por favor ingrese un email válido.</div>
             </div>
           </div>
-
           <div class="form-group">
             <input formControlName="ciudad" type="text" class="form-control mt-2" placeholder="Ciudad">
             <div *ngIf="userForm.get('ciudad')?.invalid && userForm.get('ciudad')?.touched" class="text-danger">
@@ -40,7 +38,6 @@
               <div *ngIf="userForm.get('estado')?.errors?.['required']">Estado es requerido.</div>
             </div>
           </div>
-
           <div class="form-group">
             <select formControlName="tipoPersona" class="form-control mt-2" style="background-color: white;">
               <option value="" disabled>Selecciona un tipo de persona</option>
@@ -50,18 +47,22 @@
               Debes seleccionar un tipo de persona.
             </div>
           </div>
-
-
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Guardar</button>
           </div>
         </div>
       </form>
     </div>
-    <div *ngIf="operationSuccess" class="notification-success">
-      Usuario creado con éxito.
+    <div class="d-flex justify-content-center align-items-center" style="position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 9999;">
+      <div *ngIf="operationSuccess" class="alert alert-success text-center w-50" role="alert">
+        Usuario creado con éxito.
+      </div>
     </div>
-    <div *ngIf="operationError" class="notification-error">
-      Hubo un error al crear el usuario.
+
+    <div class="d-flex justify-content-center align-items-center" style="position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 9999;">
+      <div *ngIf="operationError" class="alert alert-danger text-center w-50" role="alert">
+        Hubo un error al crear el usuario.
+      </div>
     </div>
+
   </div>

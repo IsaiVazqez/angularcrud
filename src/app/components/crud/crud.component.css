@@ -1,0 +1,38 @@
+.table-cell {
+  max-width: 200px;
+  overflow-wrap: break-word;
+  vertical-align: middle;
+}
+
+.my-thead {
+  background-color: orange;
+}
+
+.rounded-table {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.limited-cell {
+  max-width: 100px;  /* Ajusta a tu necesidad */
+  white-space: normal;  /* Sobrescribir el comportamiento por defecto si es necesario */
+  overflow-wrap: break-word; /* Romper palabras si es necesario */
+  vertical-align: middle;  /* Alineación vertical */
+}
+
+.my-theadd {
+  background-color: orange !important;
+}
+
+/* Por defecto, los botones se mostrarán en una fila */
+.button-container {
+  display: flex;
+  flex-direction: row;
+}
+
+/* Cuando el ancho de la ventana sea entre 1024px y Xpx, los botones se mostrarán en una columna */
+@media (min-width: 1024px) and (max-width: 1035px) {
+  .button-container.column-layout {
+    flex-direction: column;
+  }
+}

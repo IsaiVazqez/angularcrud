@@ -20,6 +20,8 @@ export class UserprofileComponent {
   public newTipoPersona: string = '';
   public showAddTypeField: boolean = false;
   showDeleteTypeField = false;
+  showSuccessMessage: boolean = false;
+
 
   constructor(
     private route: ActivatedRoute,
@@ -118,6 +120,11 @@ export class UserprofileComponent {
         this.tiposPersona.push(newTipo);
         this.newTipoPersona = '';
         this.showAddTypeField = false;
+        this.showSuccessMessage = true;
+
+        setTimeout(() => {
+          this.showSuccessMessage = false;
+        }, 3000);
       },
       (error) => {
         console.error('Ocurrió un error:', error);

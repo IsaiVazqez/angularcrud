@@ -4,7 +4,6 @@
       <button class="btn btn-primary" (click)="goBack()">← Regresar</button>
       <button class="btn btn-success" (click)="saveChanges()">Guardar</button>
     </div>
-
     <div class="card">
       <div class="card-header">
         <h1>Perfil de Usuario</h1>
@@ -33,7 +32,6 @@
               <button class="btn btn-danger ml-7" (click)="showDeleteTypeField = !showDeleteTypeField">Eliminar Tipo de Persona</button>
             </div>
         </div>
-
         <div *ngIf="showDeleteTypeField" class="mt-2">
           <ul class="list-group">
             <li class="list-group-item d-flex justify-content-between" *ngFor="let tipo of tiposPersona.slice(1)">
@@ -42,17 +40,19 @@
             </li>
           </ul>
         </div>
-
         <div *ngIf="showAddTypeField" class="mt-2">
           <div class="input-group">
             <input type="text" [(ngModel)]="newTipoPersona" class="form-control" placeholder="Nuevo tipo de persona" style="background-color: white;">
             <div class="input-group-append ">
               <button class="btn btn-success" (click)="addTipoPersona()">Agregar</button>
             </div>
+
           </div>
+        </div>
+        <div *ngIf="showSuccessMessage" class="alert alert-success mt-3" role="alert">
+          ¡Tipo de persona agregada exitosamente!
         </div>
       </div>
     </div>
-
   </div>
 </div>
