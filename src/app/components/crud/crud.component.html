@@ -2,6 +2,8 @@
   <div class="card shadow-lg rounded">
     <div class="card-body">
       <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-info mt-3 mb-3" (click)="toggleOrderDirection()">Cambiar Orden</button>
+        <button (click)="downloadExcel()">Descargar Excel</button>
         <button class="btn btn-success mt-3 mb-3" (click)="openModal()">Agregar Usuario</button>
       </div>
       <div class="table-responsive">

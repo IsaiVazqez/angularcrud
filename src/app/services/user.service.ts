@@ -18,17 +18,21 @@ export class UserService {
   userChanged = new Subject<void>();
 
 
-  getUsers(pageSize: number, pageNumber: number): Observable<MainDTO> {
-    const params = {
-      pageSize: pageSize.toString(),
-      pageNumber: pageNumber.toString()
-    };
+  getUsers(pageSize: number, pageNumber: number, orderDirection: string): Observable<MainDTO> {
+    const params = new HttpParams()
+      .set('pageSize', pageSize.toString())
+      .set('pageNumber', pageNumber.toString())
+      .set('orderDirection', orderDirection);
     return this.http.get<MainDTO>(`${API_URL}/user`, { params });
   }
 
   // Obtener un usuario por ID
   getUserById(id: number): Observable<User> {
     return this.http.get<User>(`${API_URL}/user/${id}`);
+  }
+
+  downloadExcel(){
+    return this.http.get(`${API_URL}/user/ExportToExcel`, {responseType: 'blob'});
   }
 
   // Crear un nuevo usuario

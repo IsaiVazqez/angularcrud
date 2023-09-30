@@ -34,6 +34,7 @@ export class CrudComponent implements OnInit {
   public totalPages: number = 0;
   public pageSize: number = 10;
   public pageNumber: number = 1;
+  public orderDirection: string = 'desc';
 
   ngOnInit(): void {
     this.loadUsers();
@@ -41,14 +42,14 @@ export class CrudComponent implements OnInit {
     window.addEventListener('resize', () => this.onResize());
 
     this.userService
-      .getUsers(this.pageNumber, this.pageSize)
+      .getUsers(this.pageNumber, this.pageSize, this.orderDirection)
       .subscribe((mainDTO: MainDTO) => {
         this.user = mainDTO.data;
       });
 
     this.userService.userChanged.subscribe(() => {
       this.userService
-        .getUsers(this.pageNumber, this.pageSize)
+        .getUsers(this.pageNumber, this.pageSize, this.orderDirection)
         .subscribe((mainDTO: MainDTO) => {
           this.user = mainDTO.data;
         });
@@ -57,7 +58,7 @@ export class CrudComponent implements OnInit {
 
   loadUsers() {
     this.userService
-      .getUsers(this.pageSize, this.pageNumber)
+      .getUsers(this.pageSize, this.pageNumber, this.orderDirection)
       .subscribe((response) => {
         this.users = response.data;
         this.totalPages = Math.ceil(response.total / this.pageSize);
@@ -66,6 +67,12 @@ export class CrudComponent implements OnInit {
         this.pageNumber = response.pageNumber;
       });
   }
+
+  toggleOrderDirection(): void {
+    this.orderDirection = this.orderDirection === 'asc' ? 'desc' : 'asc';
+    this.loadUsers();
+  }
+
 
   openModal(index?: number): void {
     this.showModal = true;
@@ -105,6 +112,20 @@ export class CrudComponent implements OnInit {
       this.closeDeleteModal();
     }
   }
+
+
+  downloadExcel() {
+    this.userService.downloadExcel().subscribe((data: Blob) => {
+      const a = document.createElement('a')
+      const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = window.URL.createObjectURL(blob);
+      a.href = url;
+      a.download = 'Users.xlsx';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  }
+
 
   closeModal(): void {
     this.showModal = false;
