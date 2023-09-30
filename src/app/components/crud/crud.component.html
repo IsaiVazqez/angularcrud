@@ -18,7 +18,6 @@
             </tr>
           </thead>
           <tbody [ngClass]="isSmallScreen ? 'd-flex flex-column align-items-stretch' : ''">
-
             <ng-container *ngFor="let user of users; let i = index">
               <tr *ngIf="!isSmallScreen">
                 <td class="table-cell">{{ user?.id }}</td>
@@ -65,25 +64,24 @@
             <div>
               <button [disabled]="pageNumber === 1" class="btn btn-primary me-2" (click)="goToFirstPage()">
                 <i class="bi bi-skip-start-fill"></i>
-              </button> <!-- Primera página -->
+              </button>
               <button [disabled]="pageNumber === 1" class="btn btn-secondary me-2" (click)="prevPage()">
                 <i class="bi bi-arrow-left"></i>
-              </button> <!-- Página anterior -->
+              </button>
               <button [disabled]="pageNumber === totalPages" class="btn btn-secondary me-2" (click)="nextPage()">
                 <i class="bi bi-arrow-right"></i>
-              </button> <!-- Página siguiente -->
+              </button>
               <button [disabled]="pageNumber === totalPages" class="btn btn-primary" (click)="goToLastPage()">
                 <i class="bi bi-skip-end-fill"></i>
-              </button> <!-- Última página --><!-- Última página -->
+              </button>
             </div>
           </div>
-
         </div>
       </div>
     </div>
     <div *ngIf="showModal" class="modal-backdrop show"></div>
     <app-user-modal [userForm]="userForm" [showModal]="showModal" [editIndex]="editIndex" [users]="users"
-      (closeModalEvent)="closeModal()" (userSuccessfullyEdited)="updateEditedUser($event)"></app-user-modal>
+      (closeModalEvent)="closeModal()" (reloadData)="loadUsers()"></app-user-modal>
     <div *ngIf="showDeleteModal" class="modal d-block" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -101,5 +99,3 @@
         </div>
       </div>
     </div>
-
-

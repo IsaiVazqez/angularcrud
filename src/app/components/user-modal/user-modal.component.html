@@ -31,7 +31,6 @@
               <div *ngIf="userForm.get('ciudad')?.errors?.['required']">Ciudad es requerida.</div>
             </div>
           </div>
-
           <div class="form-group">
             <input formControlName="estado" type="text" class="form-control mt-2" placeholder="Estado">
             <div *ngIf="userForm.get('estado')?.invalid && userForm.get('estado')?.touched" class="text-danger">
@@ -55,14 +54,12 @@
     </div>
     <div class="d-flex justify-content-center align-items-center" style="position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 9999;">
       <div *ngIf="operationSuccess" class="alert alert-success text-center w-50" role="alert">
-        Usuario creado con éxito.
+        {{ operationType === 'crear' ? 'Usuario creado con éxito.' : 'Usuario editado con éxito.' }}
       </div>
     </div>
-
     <div class="d-flex justify-content-center align-items-center" style="position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 9999;">
       <div *ngIf="operationError" class="alert alert-danger text-center w-50" role="alert">
         Hubo un error al crear el usuario.
       </div>
     </div>
-
   </div>

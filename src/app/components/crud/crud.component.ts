@@ -1,5 +1,4 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -22,7 +21,7 @@ export class CrudComponent implements OnInit {
     tipoPersona: new FormControl('', [Validators.required]),
   });
 
-  constructor(private userService: UserService, private router: Router, ) {}
+  constructor(private userService: UserService, private router: Router) { }
   users: any[] = [];
   public user: userDTO[] = [];
   showModal: boolean = false;
@@ -35,6 +34,98 @@ export class CrudComponent implements OnInit {
   public totalPages: number = 0;
   public pageSize: number = 10;
   public pageNumber: number = 1;
+
+  ngOnInit(): void {
+    this.loadUsers();
+    this.checkScreenSize();
+    window.addEventListener('resize', () => this.onResize());
+
+    this.userService
+      .getUsers(this.pageNumber, this.pageSize)
+      .subscribe((mainDTO: MainDTO) => {
+        this.user = mainDTO.data;
+      });
+
+    this.userService.userChanged.subscribe(() => {
+      this.userService
+        .getUsers(this.pageNumber, this.pageSize)
+        .subscribe((mainDTO: MainDTO) => {
+          this.user = mainDTO.data;
+        });
+    });
+  }
+
+  loadUsers() {
+    this.userService
+      .getUsers(this.pageSize, this.pageNumber)
+      .subscribe((response) => {
+        this.users = response.data;
+        this.totalPages = Math.ceil(response.total / this.pageSize);
+        this.total = response.total;
+        this.pageSize = response.pageSize;
+        this.pageNumber = response.pageNumber;
+      });
+  }
+
+  openModal(index?: number): void {
+    this.showModal = true;
+    if (index !== undefined) {
+      this.editIndex = index;
+      const user = this.users[index];
+      const tipoPersonaId =
+        user.tipoPersona?.id === 0 ? '' : user.tipoPersona?.id.toString();
+
+      this.userForm.setValue({
+        name: user.name ?? '',
+        email: user.email ?? '',
+        ciudad: user.ciudad ?? '',
+        estado: user.estado ?? '',
+        tipoPersona: tipoPersonaId,
+      });
+    }
+  }
+
+  confirmDelete(): void {
+    if (this.toDeleteIndex !== null) {
+      const userId = this.users[this.toDeleteIndex].id;
+      this.userService.deleteUser(userId).subscribe({
+        next: () => {
+          if (this.toDeleteIndex !== null) {
+            this.users.splice(this.toDeleteIndex, 1);
+            this.toDeleteIndex = null;
+          }
+          this.closeDeleteModal();
+        },
+        error: (error) => {
+          console.error('Error eliminando usuario:', error);
+          this.closeDeleteModal();
+        },
+      });
+    } else {
+      this.closeDeleteModal();
+    }
+  }
+
+  closeModal(): void {
+    this.showModal = false;
+    this.userForm.reset();
+    this.userForm.get('tipoPersona')?.setValue('');
+    this.editIndex = null;
+  }
+
+  editUser(index: number): void {
+    this.openModal(index);
+  }
+
+  openDeleteModal(index: number): void {
+    this.toDeleteIndex = index;
+    this.showDeleteModal = true;
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal = false;
+    this.toDeleteIndex = null;
+  }
 
   @HostListener('window:resize', ['$event'])
   onResize() {
@@ -84,94 +175,6 @@ export class CrudComponent implements OnInit {
     if (this.editIndex !== null) {
       this.users[this.editIndex] = editedUser;
     }
-  }
-
-  ngOnInit(): void {
-    this.loadUsers();
-    this.checkScreenSize();
-    window.addEventListener('resize', () => this.onResize());
-
-    this.userService
-    .getUsers(this.pageNumber, this.pageSize)
-    .subscribe((mainDTO: MainDTO) => {
-      console.log("Data before:", this.users);
-      this.user = mainDTO.data;
-      console.log("Data after:", this.users);
-    });
-
-    this.userService.userChanged.subscribe(() => {
-      this.userService
-        .getUsers(this.pageNumber, this.pageSize)
-        .subscribe((mainDTO: MainDTO) => {
-          this.user = mainDTO.data;
-        });
-    });
-  }
-
-  loadUsers() {
-    this.userService.getUsers(this.pageSize, this.pageNumber).subscribe(response => {
-      this.users = response.data;
-      this.totalPages = Math.ceil(response.total / this.pageSize);
-      this.total= response.total;
-      this.pageSize = response.pageSize;
-      this.pageNumber = response.pageNumber;});
-  }
-
-  openModal(index?: number): void {
-    this.showModal = true;
-    if (index !== undefined) {
-      this.editIndex = index;
-      const user = this.users[index];
-      const tipoPersonaId =
-        user.tipoPersona?.id === 0 ? '' : user.tipoPersona?.id.toString();
-
-      this.userForm.setValue({
-        name: user.name ?? '',
-        email: user.email ?? '',
-        ciudad: user.ciudad ?? '',
-        estado: user.estado ?? '',
-        tipoPersona: tipoPersonaId,
-      });
-    }
-  }
-
-  closeModal(): void {
-    this.showModal = false;
-    this.userForm.reset();
-    this.userForm.get('tipoPersona')?.setValue('');
-    this.editIndex = null;
-  }
-
-  editUser(index: number): void {
-    this.openModal(index);
-  }
-
-  openDeleteModal(index: number): void {
-    this.toDeleteIndex = index;
-    this.showDeleteModal = true;
-  }
-
-  closeDeleteModal(): void {
-    this.showDeleteModal = false;
-    this.toDeleteIndex = null;
-  }
-
-  confirmDelete(): void {
-    if (this.toDeleteIndex !== null) {
-      const userId = this.users[this.toDeleteIndex].id;
-      this.userService.deleteUser(userId).subscribe(
-        () => {
-          if (this.toDeleteIndex !== null) {
-            this.users.splice(this.toDeleteIndex, 1);
-            this.toDeleteIndex = null;
-          }
-        },
-        (error) => {
-          console.error('Error eliminando usuario:', error);
-        }
-      );
-    }
-    this.closeDeleteModal();
   }
 
 }
