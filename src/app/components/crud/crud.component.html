@@ -18,6 +18,7 @@
             </tr>
           </thead>
           <tbody [ngClass]="isSmallScreen ? 'd-flex flex-column align-items-stretch' : ''">
+
             <ng-container *ngFor="let user of users; let i = index">
               <tr *ngIf="!isSmallScreen">
                 <td class="table-cell">{{ user?.id }}</td>
@@ -53,24 +54,36 @@
         </table>
         <div class="d-flex justify-content-between align-items-center mt-3">
           <div>
-            <span>Mostrando {{pageSize}} registros en la página {{pageNumber}} de XX</span>
+            <span>Mostrando {{pageSize}} de {{total}} registros en la página {{pageNumber}} de {{totalPages}}</span>
           </div>
-          <div>
-            <select [(ngModel)]="pageSize" (change)="updatePageSize()">
+          <div class="d-flex align-items-center">
+            <select [(ngModel)]="pageSize" (change)="updatePageSize()" class="form-select me-5" style="width: auto;">
               <option value="5">5</option>
               <option value="10">10</option>
               <option value="25">25</option>
             </select>
-            <button (click)="prevPage()">Anterior</button>
-            <button (click)="nextPage()">Siguiente</button>
+            <div>
+              <button [disabled]="pageNumber === 1" class="btn btn-primary me-2" (click)="goToFirstPage()">
+                <i class="bi bi-skip-start-fill"></i>
+              </button> <!-- Primera página -->
+              <button [disabled]="pageNumber === 1" class="btn btn-secondary me-2" (click)="prevPage()">
+                <i class="bi bi-arrow-left"></i>
+              </button> <!-- Página anterior -->
+              <button [disabled]="pageNumber === totalPages" class="btn btn-secondary me-2" (click)="nextPage()">
+                <i class="bi bi-arrow-right"></i>
+              </button> <!-- Página siguiente -->
+              <button [disabled]="pageNumber === totalPages" class="btn btn-primary" (click)="goToLastPage()">
+                <i class="bi bi-skip-end-fill"></i>
+              </button> <!-- Última página --><!-- Última página -->
+            </div>
           </div>
-        </div>
 
+        </div>
       </div>
     </div>
     <div *ngIf="showModal" class="modal-backdrop show"></div>
     <app-user-modal [userForm]="userForm" [showModal]="showModal" [editIndex]="editIndex" [users]="users"
-      (closeModalEvent)="closeModal() "></app-user-modal>
+      (closeModalEvent)="closeModal()" (userSuccessfullyEdited)="updateEditedUser($event)"></app-user-modal>
     <div *ngIf="showDeleteModal" class="modal d-block" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">

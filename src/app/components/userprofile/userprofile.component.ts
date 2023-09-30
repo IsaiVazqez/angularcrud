@@ -6,7 +6,7 @@ import { UserService } from 'src/app/services/user.service';
 import { TipoPersonaService } from 'src/app/services/tipo-persona.service';
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
-import { UserToBeSent } from 'src/app/interface/user-tobe';
+import { userDTO } from 'src/app/interface/userDTO';
 
 @Component({
   selector: 'app-userprofile',
@@ -81,38 +81,13 @@ export class UserprofileComponent {
       );
     }
   }
-  updateTipoPersona(newTipoId: number) {
-    const updatedUser: UserToBeSent = {
-      name: this.user.name,
-      email: this.user.email,
-      ciudad: this.user.ciudad,
-      estado: this.user.estado,
-      tipoPersonaId: newTipoId,
-    };
-
-    console.log('Antes de la actualización:', this.user);
-
-    this.userService.getUserById(this.user.id).subscribe(
-      (user) => {
-        if (user) {
-          this.user = user;
-          this.tipoPersonaControl.setValue(
-            this.user.tipoPersona?.id.toString() ?? ''
-          );
-        }
-      },
-      (error) => {
-        console.error('Ocurrió un error:', error);
-        this.router.navigate(['/error']);
-      }
-    );
-  }
 
   goBack() {
     this.router.navigate(['/']);
   }
 
   addTipoPersona() {
+
     const tipoToAdd: TipoPersona = { id: 0, nombre: this.newTipoPersona };
 
     this.tipoPersonaService.createTypes(tipoToAdd).subscribe(
@@ -121,7 +96,6 @@ export class UserprofileComponent {
         this.newTipoPersona = '';
         this.showAddTypeField = false;
         this.showSuccessMessage = true;
-
         setTimeout(() => {
           this.showSuccessMessage = false;
         }, 3000);
@@ -133,6 +107,7 @@ export class UserprofileComponent {
   }
 
   confirmDelete(id: number) {
+
     if (window.confirm('¿Seguro quieres eliminarlo?')) {
       this.tipoPersonaService.deleteType(id).subscribe(
         () => {
@@ -166,14 +141,13 @@ export class UserprofileComponent {
   saveChanges() {
     if (this.tipoPersonaControl.valid) {
       const selectedTipoPersonaId = +this.tipoPersonaControl.value!;
-      const updatedUser: UserToBeSent = {
+      const updatedUser: userDTO = {
         name: this.user.name,
         email: this.user.email,
         ciudad: this.user.ciudad,
         estado: this.user.estado,
         tipoPersonaId: selectedTipoPersonaId,
       };
-
       this.userService.updateUser(this.user.id, updatedUser).subscribe(
         (updated) => {
           this.user = {

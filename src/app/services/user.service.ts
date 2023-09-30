@@ -4,7 +4,8 @@ import { Observable, Subject, tap } from 'rxjs';
 
 import { User } from '../interface/user.interface';
 import { API_URL } from '../constants/api';
-import { UserToBeSent } from '../interface/user-tobe';
+import { userDTO } from '../interface/userDTO';
+import { MainDTO } from '../interface/paginacionDTO';
 
 
 @Injectable({
@@ -17,11 +18,12 @@ export class UserService {
   userChanged = new Subject<void>();
 
 
-  getUsers(pageNumber: number, pageSize: number): Observable<User[]> {
-    let params = new HttpParams()
-      .set('pageNumber', pageNumber.toString())
-      .set('pageSize', pageSize.toString());
-    return this.http.get<User[]>(`${API_URL}/user`, { params: params });
+  getUsers(pageSize: number, pageNumber: number): Observable<MainDTO> {
+    const params = {
+      pageSize: pageSize.toString(),
+      pageNumber: pageNumber.toString()
+    };
+    return this.http.get<MainDTO>(`${API_URL}/user`, { params });
   }
 
   // Obtener un usuario por ID
@@ -30,7 +32,7 @@ export class UserService {
   }
 
   // Crear un nuevo usuario
-  createUser(user: UserToBeSent): Observable<User> {
+  createUser(user: userDTO): Observable<User> {
     return this.http.post<User>(`${API_URL}/user`, user).pipe(
       tap(() => {
         this.userChanged.next();
@@ -38,7 +40,7 @@ export class UserService {
     );  }
 
   // Actualizar un usuario
-  updateUser(id: number, user: UserToBeSent): Observable<User> {
+  updateUser(id: number, user: userDTO): Observable<User> {
     return this.http.put<User>(`${API_URL}/user/${id}`, user).pipe(
       tap(() => {
         this.userChanged.next();

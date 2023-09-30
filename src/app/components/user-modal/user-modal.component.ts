@@ -11,7 +11,7 @@ import {
 } from '@angular/animations';
 import { TipoPersona } from 'src/app/interface/tipo-persona';
 import { TipoPersonaService } from 'src/app/services/tipo-persona.service';
-import { UserToBeSent } from 'src/app/interface/user-tobe';
+import { userDTO } from 'src/app/interface/userDTO';
 
 @Component({
   selector: 'app-user-modal',
@@ -35,6 +35,7 @@ export class UserModalComponent {
   @Input() editIndex: number | null = null;
   @Input() users: User[] = [];
   @Output() closeModalEvent = new EventEmitter<void>();
+  @Output() userSuccessfullyEdited = new EventEmitter<User>();
   @Output() userUpdated = new EventEmitter<void>();
   public operationError: boolean = false;
   public operationSuccess: boolean = false;
@@ -95,7 +96,7 @@ export class UserModalComponent {
     }
     this.isLoading = true;
     const userToBeSaved: User = this.getUserToBeSaved();
-    const userToBeSent: UserToBeSent = {
+    const userToBeSent: userDTO = {
       name: userToBeSaved.name,
       email: userToBeSaved.email,
       ciudad: userToBeSaved.ciudad,
@@ -117,6 +118,7 @@ export class UserModalComponent {
         }
         this.isLoading = false;
         this.operationSuccess = true;
+        this.userSuccessfullyEdited.emit(returnedUser);
         setTimeout(() => {
           this.operationSuccess = false;
           this.closeModal();

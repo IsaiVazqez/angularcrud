@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 
 import { User } from 'src/app/interface/user.interface';
 import { UserService } from 'src/app/services/user.service';
+import { MainDTO } from 'src/app/interface/paginacionDTO';
+import { userDTO } from 'src/app/interface/userDTO';
 
 @Component({
   selector: 'app-crud',
@@ -20,22 +22,40 @@ export class CrudComponent implements OnInit {
     tipoPersona: new FormControl('', [Validators.required]),
   });
 
-  constructor(private userService: UserService, private router: Router) {}
-  private ngUnsubscribe = new Subject<void>();
-
-  users: User[] = [];
+  constructor(private userService: UserService, private router: Router, ) {}
+  users: any[] = [];
+  public user: userDTO[] = [];
   showModal: boolean = false;
   editIndex: number | null = null;
-  private usersSub: Subscription = new Subscription();
-  public isSmallScreen: boolean | undefined;
   toDeleteIndex: number | null = null;
+  mainDTO: MainDTO[] = [];
+  public isSmallScreen: boolean | undefined;
   public showDeleteModal: boolean = false;
-  public pageNumber: number = 1;
+  public total: number = 0;
+  public totalPages: number = 0;
   public pageSize: number = 10;
+  public pageNumber: number = 1;
 
   @HostListener('window:resize', ['$event'])
   onResize() {
     this.checkScreenSize();
+  }
+
+  prevPage() {
+    if (this.pageNumber > 1) {
+      this.pageNumber--;
+      this.loadUsers();
+    }
+  }
+
+  nextPage() {
+    this.pageNumber++;
+    this.loadUsers();
+  }
+
+  updatePageSize() {
+    this.pageNumber = 1;
+    this.loadUsers();
   }
 
   private checkScreenSize() {
@@ -46,49 +66,55 @@ export class CrudComponent implements OnInit {
     }
   }
 
+  viewUserProfile(id: number): void {
+    this.router.navigate([`/userprofile/${id}`]);
+  }
+
+  goToFirstPage() {
+    this.pageNumber = 1;
+    this.loadUsers();
+  }
+
+  goToLastPage() {
+    this.pageNumber = this.totalPages;
+    this.loadUsers();
+  }
+
+  updateEditedUser(editedUser: User) {
+    if (this.editIndex !== null) {
+      this.users[this.editIndex] = editedUser;
+    }
+  }
+
   ngOnInit(): void {
     this.loadUsers();
     this.checkScreenSize();
     window.addEventListener('resize', () => this.onResize());
 
     this.userService
-      .getUsers(this.pageNumber, this.pageSize)
-      .subscribe((users: User[]) => {
-        this.users = users;
-      });
+    .getUsers(this.pageNumber, this.pageSize)
+    .subscribe((mainDTO: MainDTO) => {
+      console.log("Data before:", this.users);
+      this.user = mainDTO.data;
+      console.log("Data after:", this.users);
+    });
 
     this.userService.userChanged.subscribe(() => {
       this.userService
         .getUsers(this.pageNumber, this.pageSize)
-        .subscribe((users: User[]) => {
-          this.users = users;
+        .subscribe((mainDTO: MainDTO) => {
+          this.user = mainDTO.data;
         });
     });
   }
 
-  prevPage() {
-    if (this.pageNumber > 1) {
-      this.pageNumber--;
-      this.loadUsers();
-    }
-  }
-
-
-  nextPage() {
-    this.pageNumber++;
-    this.loadUsers();
-  }
-  updatePageSize() {
-    this.pageNumber = 1;
-    this.loadUsers();
-  }
-
   loadUsers() {
-    this.userService
-      .getUsers(this.pageNumber, this.pageSize)
-      .subscribe((users: User[]) => {
-        this.users = users;
-      });
+    this.userService.getUsers(this.pageSize, this.pageNumber).subscribe(response => {
+      this.users = response.data;
+      this.totalPages = Math.ceil(response.total / this.pageSize);
+      this.total= response.total;
+      this.pageSize = response.pageSize;
+      this.pageNumber = response.pageNumber;});
   }
 
   openModal(index?: number): void {
@@ -148,8 +174,4 @@ export class CrudComponent implements OnInit {
     this.closeDeleteModal();
   }
 
-  viewUserProfile(id: number): void {
-    console.log('cscasc');
-    this.router.navigate([`/userprofile/${id}`]);
-  }
 }
