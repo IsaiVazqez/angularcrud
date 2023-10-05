@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { UserprofileComponent } from './components/userprofile/userprofile.component';
-import { CrudComponent } from './components/crud/crud.component';
+import { HomePageComponent } from './home/pages/home-page/home-page.component';
+import { ProfileComponent } from './home/components/profile/profile.component';
 
 const routes: Routes = [
-  { path: '', component: CrudComponent },
-  { path: 'userprofile/:id', component: UserprofileComponent },
+  { path: '', component: HomePageComponent },
+  { path: 'userprofile/:id', component: ProfileComponent },
 ];
 
 @NgModule({

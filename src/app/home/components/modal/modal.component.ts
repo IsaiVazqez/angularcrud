@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { User } from 'src/app/interface/user.interface';
-import { UserService } from 'src/app/services/user.service';
+import { User } from 'src/app/home/interfaces/user.interface';
+import { UserService } from 'src/app/home/services/user.service';
 import {
   trigger,
   state,
@@ -9,14 +9,14 @@ import {
   transition,
   animate,
 } from '@angular/animations';
-import { TipoPersona } from 'src/app/interface/tipo-persona';
-import { TipoPersonaService } from 'src/app/services/tipo-persona.service';
-import { userDTO } from 'src/app/interface/userDTO';
+import { TipoPersona } from 'src/app/home/interfaces/tipo-persona';
+import { TipoPersonaService } from 'src/app/home/services/tipo-persona.service';
+import { userDTO } from 'src/app/home/interfaces/userDTO';
 
 @Component({
-  selector: 'app-user-modal',
-  templateUrl: './user-modal.component.html',
-  styleUrls: ['./user-modal.component.css'],
+  selector: 'app-modal',
+  templateUrl: './modal.component.html',
+  styleUrls: ['./modal.component.css'],
   animations: [
     trigger('fadeInOut', [
       state(
@@ -29,7 +29,7 @@ import { userDTO } from 'src/app/interface/userDTO';
     ]),
   ],
 })
-export class UserModalComponent {
+export class ModalComponent {
   @Input() userForm!: FormGroup;
   @Input() showModal!: boolean;
   @Input() editIndex: number | null = null;
@@ -153,3 +153,4 @@ export class UserModalComponent {
     }
   }
 }
+

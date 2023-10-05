@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { TipoPersona } from '../interface/tipo-persona';
+import { TipoPersona } from '../interfaces/tipo-persona';
 import { Observable, Subject, tap } from 'rxjs';
-import { API_URL } from '../constants/api';
+import { API_URL } from '../../constants/api';
 @Injectable({
   providedIn: 'root'
 })

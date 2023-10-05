@@ -1,19 +1,19 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { TipoPersona } from 'src/app/interface/tipo-persona';
-import { User } from 'src/app/interface/user.interface';
-import { UserService } from 'src/app/services/user.service';
-import { TipoPersonaService } from 'src/app/services/tipo-persona.service';
+import { TipoPersona } from 'src/app/home/interfaces/tipo-persona';
+import { User } from 'src/app/home/interfaces/user.interface';
+import { UserService } from 'src/app/home/services/user.service';
+import { TipoPersonaService } from 'src/app/home/services/tipo-persona.service';
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
-import { userDTO } from 'src/app/interface/userDTO';
+import { userDTO } from 'src/app/home/interfaces/userDTO';
 
 @Component({
-  selector: 'app-userprofile',
-  templateUrl: './userprofile.component.html',
-  styleUrls: ['./userprofile.component.css'],
+  selector: 'app-profile',
+  templateUrl: './profile.component.html',
+  styleUrls: ['./profile.component.css']
 })
-export class UserprofileComponent {
+export class ProfileComponent {
   user!: User;
   tiposPersona: TipoPersona[] = [];
   tipoPersonaControl = new FormControl('');
@@ -168,3 +168,4 @@ export class UserprofileComponent {
     }
   }
 }
+

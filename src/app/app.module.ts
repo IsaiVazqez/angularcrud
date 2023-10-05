@@ -3,29 +3,19 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CrudComponent } from './components/crud/crud.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { HttpClientModule } from '@angular/common/http';
-import { UserModalComponent } from './components/user-modal/user-modal.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { UserprofileComponent } from './components/userprofile/userprofile.component';
+import { HomePageComponent } from './home/pages/home-page/home-page.component';
+import { HomeModule } from './home/home.module';
+import { AdminModule } from './admin/admin.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CrudComponent,
-    UserModalComponent,
-    UserprofileComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule,
-    NgbModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    BrowserAnimationsModule
+    HomeModule,
+    AdminModule
   ],
   providers: [],
   bootstrap: [AppComponent]

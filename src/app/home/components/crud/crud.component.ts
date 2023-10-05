@@ -1,18 +1,18 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormsModule} from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { User } from 'src/app/interface/user.interface';
-import { UserService } from 'src/app/services/user.service';
-import { MainDTO } from 'src/app/interface/paginacionDTO';
-import { userDTO } from 'src/app/interface/userDTO';
+import { User } from 'src/app/home/interfaces/user.interface';
+import { UserService } from 'src/app/home/services/user.service';
+import { MainDTO } from 'src/app/home/interfaces/paginacionDTO';
+import { userDTO } from 'src/app/home/interfaces/userDTO';
 
 @Component({
   selector: 'app-crud',
   templateUrl: './crud.component.html',
-  styleUrls: ['./crud.component.css'],
+  styleUrls: ['./crud.component.css']
 })
-export class CrudComponent implements OnInit {
+export class CrudComponent implements OnInit{
   public userForm = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(5)]),
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -197,5 +197,4 @@ export class CrudComponent implements OnInit {
   viewUserProfile(id: number): void {
     this.router.navigate([`/userprofile/${id}`]);
   }
-
 }
