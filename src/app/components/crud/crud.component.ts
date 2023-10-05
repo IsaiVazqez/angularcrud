@@ -170,17 +170,6 @@ export class CrudComponent implements OnInit {
     this.loadUsers();
   }
 
-  private checkScreenSize() {
-    if (window.innerWidth < 1024) {
-      this.isSmallScreen = true;
-    } else {
-      this.isSmallScreen = false;
-    }
-  }
-
-  viewUserProfile(id: number): void {
-    this.router.navigate([`/userprofile/${id}`]);
-  }
 
   goToFirstPage() {
     this.pageNumber = 1;
@@ -196,6 +185,17 @@ export class CrudComponent implements OnInit {
     if (this.editIndex !== null) {
       this.users[this.editIndex] = editedUser;
     }
+  }
+  private checkScreenSize() {
+    if (window.innerWidth < 1024) {
+      this.isSmallScreen = true;
+    } else {
+      this.isSmallScreen = false;
+    }
+  }
+
+  viewUserProfile(id: number): void {
+    this.router.navigate([`/userprofile/${id}`]);
   }
 
 }
