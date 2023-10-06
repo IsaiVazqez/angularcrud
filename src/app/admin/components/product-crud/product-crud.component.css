@@ -41,3 +41,16 @@
   max-width: 80%;  /* Ajusta este valor según lo ancho que quieras el modal */
   width: 100%;
 }
+/* Estilo para modales en dispositivos móviles */
+@media (max-width: 576px) {
+  .wide-modal {
+    width: 200%
+  }
+  .modal-dialog {
+    margin: 0 auto; /* Centra el modal horizontalmente */
+    width: 100%;
+    transform: translateX(-30%);
+
+  }
+}
+
