@@ -1,0 +1,6 @@
+
+.main-content {
+  flex: 1; /* Ocupa todo el espacio restante después del sidebar */
+  padding: 20px; /* Añade un poco de espacio alrededor del contenido */
+  overflow-y: auto; /* Para que el contenido sea desplazable si excede el alto de la ventana */
+}

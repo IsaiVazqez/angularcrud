@@ -1,0 +1,23 @@
+<div class="container mt-5 text-dark">
+  <div *ngFor="let order of orders" class="mb-5">
+    <div class="card">
+      <div class="card-header">
+        <h3>Order número: <span class="interpolated-content">{{ order.id }}</span></h3>
+        <h3>Usuario: <span class="interpolated-content">{{ order.userName }}</span></h3>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-4" *ngFor="let product of order.products">
+            <div class="card mb-2">
+              <img class="product-image" [src]="product.image ? getProductImageUrl(product.image.url) : defaultImageUrl" alt="{{ product.nombre }}" >
+              <div class="card-body">
+                <h5 class="card-title"> Nombre del producto: <span class="interpolated-content">{{ product.nombre }}</span></h5>
+                <p class="card-text">Precio: <span class="interpolated-content">${{ product.precio }}</span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

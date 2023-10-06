@@ -1,0 +1,11 @@
+.product-image {
+  height: 150px;
+  width: auto;
+  display: block;
+  margin: 0 auto;
+  object-fit: cover;
+}
+
+.interpolated-content {
+  color: #888;
+}
