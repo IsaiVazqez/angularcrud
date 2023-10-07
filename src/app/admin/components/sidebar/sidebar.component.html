@@ -7,7 +7,7 @@
       <li><a [routerLink]="['/home']"><fa-icon [icon]="faUserCircle"></fa-icon> Usuarios</a></li>
       <li><a [routerLink]="['/admin/products']"><fa-icon [icon]="faBox"></fa-icon> Productos</a></li>
       <li><a [routerLink]="['/admin/orders']"><fa-icon [icon]="faClipboardList"></fa-icon> Órdenes</a></li>
-      <li><a href="#"><fa-icon [icon]="faShoppingCart"></fa-icon></a></li>
+      <li><a [routerLink]="['/admin/cart']"><fa-icon [icon]="faShoppingCart"></fa-icon></a></li>
     </ul>
   </div>
   <div>
@@ -19,7 +19,7 @@
         </li>
         <li (click)="toggleMenu()"><a [routerLink]="['/admin/orders']"><fa-icon [icon]="faClipboardList"></fa-icon>
           Órdenes</a></li>
-        <li (click)="toggleMenu()"><a href="#"><fa-icon [icon]="faShoppingCart"></fa-icon> </a></li>
+        <li (click)="toggleMenu()"><a [routerLink]="['/admin/cart']"><fa-icon [icon]="faShoppingCart"></fa-icon> </a></li>
       </ul>
     </div>
   </div>

@@ -4,6 +4,7 @@ export interface Product {
   precio:  number;
   idImage: number;
   image:   Image;
+  quantity?: number;  // Esta es la propiedad nueva
 }
 
 export interface Image {

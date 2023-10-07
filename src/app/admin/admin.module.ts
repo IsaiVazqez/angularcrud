@@ -7,13 +7,15 @@ import { ProductCrudComponent } from './components/product-crud/product-crud.com
 import { AdminRoutingModule } from './routes/admin-routing/admin-routing.module';
 import { OrderCrudComponent } from './components/order-crud/order-crud.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CartComponent } from './components/cart/cart.component';
 
 @NgModule({
   declarations: [
     AdminPageComponent,
     SidebarComponent,
     ProductCrudComponent,
-    OrderCrudComponent
+    OrderCrudComponent,
+    CartComponent
   ],
   exports: [
     AdminPageComponent,

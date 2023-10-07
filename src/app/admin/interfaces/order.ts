@@ -4,5 +4,6 @@ export interface Order {
   id:       number;
   userId:   number;
   userName: string;
+  quantity: number;
   products: Product[];
 }

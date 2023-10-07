@@ -6,6 +6,7 @@ import { ProductCrudComponent } from '../../components/product-crud/product-crud
 import { ProfileComponent } from 'src/app/home/components/profile/profile.component';
 import { HomePageComponent } from 'src/app/home/pages/home-page/home-page.component';
 import { OrderCrudComponent } from '../../components/order-crud/order-crud.component';
+import { CartComponent } from '../../components/cart/cart.component';
 
 
 const routes: Routes = [
@@ -14,7 +15,8 @@ const routes: Routes = [
     component: AdminPageComponent,
     children: [
       { path: 'products', component: ProductCrudComponent },
-      { path: 'orders', component: OrderCrudComponent }
+      { path: 'orders', component: OrderCrudComponent },
+      { path: 'cart', component: CartComponent }
     ]
   }
 ];

@@ -2,7 +2,7 @@
   <div *ngFor="let order of orders" class="mb-5">
     <div class="card">
       <div class="card-header">
-        <h3>Order número: <span class="interpolated-content">{{ order.id }}</span></h3>
+        <h3>Orden número: <span class="interpolated-content">{{ order.id }}</span></h3>
         <h3>Usuario: <span class="interpolated-content">{{ order.userName }}</span></h3>
       </div>
       <div class="card-body">
@@ -13,11 +13,16 @@
               <div class="card-body">
                 <h5 class="card-title"> Nombre del producto: <span class="interpolated-content">{{ product.nombre }}</span></h5>
                 <p class="card-text">Precio: <span class="interpolated-content">${{ product.precio }}</span></p>
+                <p class="card-text">Cantidad: <span class="interpolated-content">{{ product.quantity }}</span></p> <!-- Aquí mostramos la cantidad -->
               </div>
             </div>
           </div>
         </div>
       </div>
+      <div class="card-footer">
+        <h4>Total de la Orden: ${{ getTotalOfOrder(order) }}</h4>
+      </div>
+
     </div>
   </div>
 </div>

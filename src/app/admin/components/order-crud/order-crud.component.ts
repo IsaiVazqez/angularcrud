@@ -8,10 +8,10 @@ import { API_URL } from 'src/app/constants/api';
   templateUrl: './order-crud.component.html',
   styleUrls: ['./order-crud.component.css']
 })
-export class OrderCrudComponent implements OnInit{
+export class OrderCrudComponent implements OnInit {
 
   orders: Order[] = [];
-  defaultImageUrl = 'path_to_default_image'; // Reemplaza con la ruta de tu imagen predeterminada
+  defaultImageUrl = 'path_to_default_image';
 
   constructor(private orderService: OrderService) { }
 
@@ -27,13 +27,19 @@ export class OrderCrudComponent implements OnInit{
 
   getProductImageUrl(relativePath: string | null): string {
     if (relativePath) {
-        return API_URL + relativePath;
+      return API_URL + relativePath;
     } else {
-        return 'path_to_default_image'; // Proporciona una imagen predeterminada si el producto no tiene una imagen.
+      return 'path_to_default_image';
     }
+  }
+
+  getTotalOfOrder(order: Order): number {
+    return order.products.reduce((total, product) => {
+      return total + ((product.precio ?? 0) * (product.quantity ?? 1));
+    }, 0);
 }
 
 
 
-  openAddProductModal(): void {}
+  openAddProductModal(): void { }
 }

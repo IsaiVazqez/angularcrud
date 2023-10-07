@@ -28,6 +28,12 @@ export class UserService {
     return this.http.get<User>(`${API_URL}/user/${id}`);
   }
 
+  getCurrentUserId(): number | null {
+    const userId = localStorage.getItem('currentUserId');
+    return userId ? +userId : null;
+  }
+
+
   downloadExcel(){
     return this.http.get(`${API_URL}/user/ExportToExcel`, {responseType: 'blob'});
   }

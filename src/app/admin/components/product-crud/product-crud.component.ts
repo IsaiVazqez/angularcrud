@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Product } from '../../interfaces/product.interface';
 import { ProductsService } from '../../services/products.service';
 import { API_URL } from 'src/app/constants/api';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CreateProductDTO } from '../../interfaces/createProductDTO.interface';
 import { UpdateProductDTO } from '../../interfaces/updateProductDTO.interface';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-product-crud',
@@ -37,7 +38,8 @@ export class ProductCrudComponent implements OnInit {
 
   });
 
-  constructor(private productService: ProductsService) {
+  constructor(private productService: ProductsService, private cartService: CartService, private cd: ChangeDetectorRef,
+  ) {
     this.newProductName = '';
   }
 
@@ -87,8 +89,6 @@ export class ProductCrudComponent implements OnInit {
       this.productService.updateProduct(this.products[this.selectedProductIndex].id, productToUpdate).subscribe({
         next: (updatedProduct) => {
           this.products[this.selectedProductIndex!] = updatedProduct;
-
-          // Dependiendo del modo, setea la variable correspondiente para el mensaje de éxito
           if (this.isEditMode) {
             this.editOperationSuccess = true;
             setTimeout(() => {
@@ -113,7 +113,7 @@ export class ProductCrudComponent implements OnInit {
           this.closeModal();
         }
       });
-    }else {
+    } else {
 
       const productName = this.productForm.get('productName')?.value ?? '';
       const productPrice = +this.productForm.get('productPrice')?.value! ?? 0;
@@ -129,7 +129,7 @@ export class ProductCrudComponent implements OnInit {
         (newProduct) => {
           this.getProducts();
           this.closeModal();
-          this.finalizeOperation(true); // Llama a finalizeOperation en lugar de cambiar las variables directamente
+          this.finalizeOperation(true);
         },
         (error) => {
           console.error('There was an error while creating the product:', error);
@@ -151,24 +151,24 @@ export class ProductCrudComponent implements OnInit {
 
   openEditProductModal(index: number): void {
     if (index >= 0 && index < this.products.length) {
-        this.selectedProductIndex = index;
-        this.populateProductForm(this.products[index]);
-        this.removeProductImageValidator();
-        this.isModalOpen = true;
-        this.isEditMode = true;
+      this.selectedProductIndex = index;
+      this.populateProductForm(this.products[index]);
+      this.removeProductImageValidator();
+      this.isModalOpen = true;
+      this.isEditMode = true;
     } else {
-        console.error("Índice de producto inválido:", index);
+      console.error("Índice de producto inválido:", index);
     }
-}
+  }
 
   confirmDeleteProduct(): void {
     if (this.toDeleteProductIndex !== null &&
-        this.toDeleteProductIndex >= 0 &&
-        this.toDeleteProductIndex < this.products.length) {
+      this.toDeleteProductIndex >= 0 &&
+      this.toDeleteProductIndex < this.products.length) {
 
       const product = this.products[this.toDeleteProductIndex];
 
-      if(product) {
+      if (product) {
         const productId = product.id;
 
         this.productService.deleteProduct(productId).subscribe({
@@ -177,6 +177,7 @@ export class ProductCrudComponent implements OnInit {
               this.products.splice(this.toDeleteProductIndex, 1);
               this.toDeleteProductIndex = null;
               this.deleteOperationSuccess = true;
+              this.cd.detectChanges();
               setTimeout(() => {
                 this.deleteOperationSuccess = false;
               }, 3000);
@@ -207,7 +208,7 @@ export class ProductCrudComponent implements OnInit {
 
 
   openDeleteProductModal(index: number): void {
-    if(index >= 0 && index < this.products.length) { // Verifica que el índice es válido
+    if (index >= 0 && index < this.products.length) {
       this.toDeleteProductIndex = index;
       this.showDeleteProductModal = true;
     } else {
@@ -218,14 +219,18 @@ export class ProductCrudComponent implements OnInit {
   setProductImageValidator() {
     const control = this.productForm.get('productImage');
     control?.setValidators([Validators.required]);
-    control?.updateValueAndValidity(); // esto es para que la validación sea recalculada
-}
+    control?.updateValueAndValidity();
+  }
 
-removeProductImageValidator() {
+  removeProductImageValidator() {
     const control = this.productForm.get('productImage');
     control?.clearValidators();
-    control?.updateValueAndValidity(); // esto es para que la validación sea recalculada
-}
+    control?.updateValueAndValidity();
+  }
+
+  addToCart(product: Product): void {
+    this.cartService.addToCart(product);
+  }
 
 
 
@@ -241,17 +246,17 @@ removeProductImageValidator() {
     this.selectedProductIndex = null;
     this.setProductImageValidator();
     this.isModalOpen = true;
-}
+  }
 
 
-closeModal(): void {
-  this.isModalOpen = false;
-  this.productForm.reset();
-  this.newProductImage = null;
-  this.selectedProductIndex = null;
-  this.selectedProductImage = null;
-  this.setProductImageValidator(); // Establecer el validador aquí también
-}
+  closeModal(): void {
+    this.isModalOpen = false;
+    this.productForm.reset();
+    this.newProductImage = null;
+    this.selectedProductIndex = null;
+    this.selectedProductImage = null;
+    this.setProductImageValidator(); // Establecer el validador aquí también
+  }
 
   finalizeOperation(success: boolean): void {
     this.isLoading = false;

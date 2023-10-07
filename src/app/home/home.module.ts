@@ -10,6 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { UserService } from './services/user.service';
 
 @NgModule({
   declarations: [
@@ -17,12 +18,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     CrudComponent,
     ModalComponent,
     ProfileComponent,
+
   ],
   exports: [
     HomePageComponent,
     CrudComponent,
     ModalComponent,
     ProfileComponent,
+
   ],
   imports: [
     CommonModule,
@@ -32,6 +35,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
+
   ]
 })
 export class HomeModule { }

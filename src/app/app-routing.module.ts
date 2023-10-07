@@ -5,7 +5,7 @@ import { ProfileComponent } from './home/components/profile/profile.component';
 import { AdminPageComponent } from './admin/pages/admin-page/admin-page.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/admin', pathMatch: 'full' },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
   { path: 'userprofile/:id', component: ProfileComponent },
   { path: 'home', component: HomePageComponent }
