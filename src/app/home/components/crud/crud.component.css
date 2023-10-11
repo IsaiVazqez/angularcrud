@@ -7,9 +7,20 @@
 .my-thead {
   background-color: orange;
 }
+
 .container {
-  margin-top:  100px; /* Usa !important sólo para probar */
-  padding-top: 0; /* Usa !important sólo para probar */
+  margin-top:  20px;
+  padding-top: 0;
+}
+
+
+.btn-custom {
+  background-color: white;
+  color: rgb(52, 59, 134);
+  border: 1px solid rgb(52, 59, 134);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: rgb(52, 59, 134);
 }
 
 
@@ -33,6 +44,34 @@
   display: flex;
   flex-direction: row;
 }
+
+.btn-orange {
+  background-color: rgb(237, 125, 49);
+  border: none;
+  color: white;
+}
+
+.new-line {
+  display: block;
+}
+.outside-buttons {
+  margin-top: 75px;
+  margin-left: 20px;
+}
+
+.btn-white {
+  background-color: white;
+  color: rgb(52, 59, 134);
+}
+
+.card-white {
+  background-color: white;
+}
+
+.custom-shadow {
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1) !important;
+}
+
 @media (max-width: 576px) {
   .s {
     flex-direction: column;

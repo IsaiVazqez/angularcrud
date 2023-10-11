@@ -1,7 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormsModule} from '@angular/forms';
 import { Router } from '@angular/router';
-
+import { faArrowDown, faArrowUp} from '@fortawesome/free-solid-svg-icons';
 import { User } from 'src/app/home/interfaces/user.interface';
 import { UserService } from 'src/app/home/services/user.service';
 import { MainDTO } from 'src/app/home/interfaces/paginacionDTO';
@@ -22,19 +22,22 @@ export class CrudComponent implements OnInit{
   });
 
   constructor(private userService: UserService, private router: Router) { }
+  faArrowDown = faArrowDown;
+  faArrowUp = faArrowUp;
   users: any[] = [];
-  public user: userDTO[] = [];
+  user: userDTO[] = [];
   showModal: boolean = false;
   editIndex: number | null = null;
   toDeleteIndex: number | null = null;
   mainDTO: MainDTO[] = [];
-  public isSmallScreen: boolean | undefined;
-  public showDeleteModal: boolean = false;
-  public total: number = 0;
-  public totalPages: number = 0;
-  public pageSize: number = 10;
-  public pageNumber: number = 1;
-  public orderDirection: string = 'desc';
+  showUxButtons: boolean = true;
+  isSmallScreen: boolean | undefined;
+  showDeleteModal: boolean = false;
+  total: number = 0;
+  totalPages: number = 0;
+  pageSize: number = 10;
+  pageNumber: number = 1;
+  orderDirection: string = 'desc';
 
   ngOnInit(): void {
     this.loadUsers();
@@ -71,6 +74,10 @@ export class CrudComponent implements OnInit{
   toggleOrderDirection(): void {
     this.orderDirection = this.orderDirection === 'asc' ? 'desc' : 'asc';
     this.loadUsers();
+  }
+
+  toggleUxButtons() {
+    this.showUxButtons = !this.showUxButtons;
   }
 
 
